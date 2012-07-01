@@ -81,13 +81,13 @@ BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 %define		no_install_post_check_so	1
 
 %description
-Display driver files for the AMD Radeon HD 2000/3000/4000
+AMD Display driver for the Radeon HD 2000/3000/4000
 (R600/R700) series.
 This package provides 2D display drivers and hardware accelerated
 OpenGL.
 
 %description -l pl.UTF-8
-Sterowniki do kart graficznych AMD Radeon HD 2000/3000/4000
+Sterownik AMD do kart graficznych Radeon HD 2000/3000/4000
 (R600/R700).
 Pakiet dostarcza sterowniki obsługujące wyświetlanie 2D oraz sprzętowo
 akcelerowany OpenGL.
