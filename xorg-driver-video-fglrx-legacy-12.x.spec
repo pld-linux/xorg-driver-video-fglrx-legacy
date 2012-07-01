@@ -29,7 +29,7 @@
 %endif
 
 %define		rel		1
-%define		pname		xorg-driver-video-fglrx-legace-12.x
+%define		pname		xorg-driver-video-fglrx-legacy-12.x
 Summary:	Linux Drivers for AMD graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD
 Name:		%{pname}%{_alt_kernel}
@@ -46,14 +46,14 @@ Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
 Source4:	10-fglrx.conf
 Source5:	10-fglrx-modules.conf
-Patch0:		%{pname}-kh.patch
-Patch1:		%{pname}-smp.patch
-Patch2:		%{pname}-x86genericarch.patch
-Patch3:		%{pname}-desktop.patch
-Patch4:		%{pname}-nofinger.patch
-Patch5:		%{pname}-GPL-only.patch
-Patch6:		%{pname}-WARN.patch
-Patch7:		%{pname}-kernel-fpu.patch
+Patch0:		xorg-driver-video-fglrx-kh.patch
+Patch1:		xorg-driver-video-fglrx-smp.patch
+Patch2:		xorg-driver-video-fglrx-x86genericarch.patch
+Patch3:		xorg-driver-video-fglrx-desktop.patch
+Patch4:		xorg-driver-video-fglrx-nofinger.patch
+Patch5:		xorg-driver-video-fglrx-GPL-only.patch
+Patch6:		xorg-driver-video-fglrx-WARN.patch
+Patch7:		xorg-driver-video-fglrx-kernel-fpu.patch
 Patch8:		kernel-3.4.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
