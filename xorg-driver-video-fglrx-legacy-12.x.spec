@@ -28,14 +28,13 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		10
-%define		pname		xorg-driver-video-fglrx
-Summary:	Linux Drivers for AMD/ATI graphics accelerators
-Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
+%define		rel		1
+%define		pname		xorg-driver-video-fglrx-legace-12.x
+Summary:	Linux Drivers for AMD graphics accelerators
+Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD
 Name:		%{pname}%{_alt_kernel}
 Version:	12.4
 Release:	%{rel}
-Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # Download http://support.amd.com/us/gpudownload/linux/Pages/radeon_linux.aspx?type=2.4.1&product=2.4.1.3.42&lang=English
@@ -82,19 +81,20 @@ BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 %define		no_install_post_check_so	1
 
 %description
-Display driver files for the ATI Radeon 8500, 9700, Mobility M9 and
-the FireGL 8700/8800, E1, Z1/X1 graphics accelerators. This package
-provides 2D display drivers and hardware accelerated OpenGL.
+Display driver files for the AMD Radeon HD 2000/3000/4000
+(R600/R700) series.
+This package provides 2D display drivers and hardware accelerated
+OpenGL.
 
 %description -l pl.UTF-8
-Sterowniki do kart graficznych ATI Radeon 8500, 9700, Mobility M9 oraz
-graficznych akceleratorów FireGL 8700/8800, E1, Z1/X1. Pakiet
-dostarcza sterowniki obsługujące wyświetlanie 2D oraz sprzętowo
+Sterowniki do kart graficznych AMD Radeon HD 2000/3000/4000
+(R600/R700).
+Pakiet dostarcza sterowniki obsługujące wyświetlanie 2D oraz sprzętowo
 akcelerowany OpenGL.
 
 %package libs
-Summary:	OpenGL (GL and GLX) ATI/AMD libraries
-Summary(pl.UTF-8):	Biblioteki OpenGL (GL i GLX) ATI/AMD
+Summary:	OpenGL (GL and GLX) AMD libraries
+Summary(pl.UTF-8):	Biblioteki OpenGL (GL i GLX) AMD
 Group:		X11/Development/Libraries
 Requires(post,postun):	/sbin/ldconfig
 # 4.0 for Radeon HD 5000 Series
@@ -106,14 +106,14 @@ Obsoletes:	XFree86-OpenGL-core < 1:7.0.0
 Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
 
 %description libs
-ATI/AMD OpenGL (GL and GLX only) implementation libraries.
+AMD OpenGL (GL and GLX only) implementation libraries.
 
 %description libs -l pl.UTF-8
-Implementacja OpenGL (tylko GL i GLX) firmy ATI/AMD.
+Implementacja OpenGL (tylko GL i GLX) firmy AMD.
 
 %package devel
-Summary:	Header files for development for the ATI Radeon cards proprietary driver
-Summary(pl.UTF-8):	Pliki nagłówkowe do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
+Summary:	Header files for development for the AMD Radeon cards proprietary driver
+Summary(pl.UTF-8):	Pliki nagłówkowe do programowania z użyciem własnościowego sterownika dla kart AMD Radeon
 Group:		X11/Development/Libraries
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 # or more?
@@ -125,30 +125,30 @@ Obsoletes:	X11-OpenGL-devel-base
 Obsoletes:	XFree86-OpenGL-devel-base
 
 %description devel
-Header files for development for the ATI proprietary driver for ATI
+Header files for development for the AMD proprietary driver for AMD
 Radeon graphic cards.
 
 %description devel -l pl.UTF-8
 Pliki nagłówkowe do programowania z użyciem własnościowego sterownika
-ATI dla kart graficznych Radeon.
+AMD dla kart graficznych Radeon.
 
 %package static
-Summary:	Static libraries for development for the ATI Radeon cards proprietary driver
-Summary(pl.UTF-8):	Biblioteki statyczne do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
+Summary:	Static libraries for development for the AMD Radeon cards proprietary driver
+Summary(pl.UTF-8):	Biblioteki statyczne do programowania z użyciem własnościowego sterownika dla kart AMD Radeon
 Group:		X11/Development/Libraries
 Requires:	%{pname}-devel = %{epoch}:%{version}-%{rel}
 
 %description static
-Static libraries for development for the ATI proprietary driver for
-ATI Radeon graphic cards.
+Static libraries for development for the AMD proprietary driver for
+AMD Radeon graphic cards.
 
 %description static -l pl.UTF-8
 Biblioteki statyczne do programowania z użyciem własnościowego
-sterownika ATI dla kart graficznych ATI Radeon.
+sterownika AMD dla kart graficznych AMD Radeon.
 
 %package atieventsd
-Summary:	ATI external events daemon
-Summary(pl.UTF-8):	Demon zewnętrznych zdarzeń ATI
+Summary:	AMD external events daemon
+Summary(pl.UTF-8):	Demon zewnętrznych zdarzeń AMD
 Group:		Daemons
 Requires:	%{pname} = %{epoch}:%{version}-%{rel}
 Requires:	acpid
@@ -156,21 +156,21 @@ Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
 
 %description atieventsd
-The ATI External Events Daemon is a user-level application that
+The AMD External Events Daemon is a user-level application that
 monitors various system events such as ACPI or hotplug, then notifies
 the driver via the X extensions interface that the event has occured.
 
 %description atieventsd -l pl.UTF-8
-Demon zewnętrznych zdarzeń ATI jest aplikacją monitorującą różne
+Demon zewnętrznych zdarzeń AMD jest aplikacją monitorującą różne
 zdarzenia systemowe, takie jak ACPI lub hotplug, a następnie
 informującą sterownik poprzez interfejs rozszerzeń X, że zaszło
 zdarzenie.
 
-%package -n kernel%{_alt_kernel}-video-firegl
-Summary:	ATI kernel module for FireGL support
-Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla ATI FireGL
+%package -n kernel%{_alt_kernel}-video-firegl-legacy-12.x
+Summary:	AMD kernel module for FireGL support
+Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla AMD FireGL
 Release:	%{rel}@%{_kernel_ver_str}
-License:	ATI
+License:	AMD
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel}
 %if "%{_alt_kernel}" != "%{nil}"
@@ -178,11 +178,11 @@ Provides:	kernel-video-firegl = %{epoch}:%{version}-%{rel}@%{_kernel_ver_str}
 %endif
 Requires(post,postun):	/sbin/depmod
 
-%description -n kernel%{_alt_kernel}-video-firegl
-ATI kernel module for FireGL support.
+%description -n kernel%{_alt_kernel}-video-firegl-legacy-12.x
+AMD kernel module for FireGL support.
 
-%description -n kernel%{_alt_kernel}-video-firegl -l pl.UTF-8
-Moduł jądra oferujący wsparcie dla ATI FireGL.
+%description -n kernel%{_alt_kernel}-video-firegl-legacy-12.x -l pl.UTF-8
+Moduł jądra oferujący wsparcie dla AMD FireGL.
 
 %prep
 %setup -q -c -T
@@ -306,10 +306,10 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del atieventsd
 fi
 
-%post	-n kernel%{_alt_kernel}-video-firegl
+%post	-n kernel%{_alt_kernel}-video-firegl-legacy-12.x
 %depmod %{_kernel_ver}
 
-%postun -n kernel%{_alt_kernel}-video-firegl
+%postun -n kernel%{_alt_kernel}-video-firegl-legacy-12.x
 %depmod %{_kernel_ver}
 
 %if %{with userspace}
@@ -389,7 +389,7 @@ fi
 %endif
 
 %if %{with kernel}
-%files -n kernel%{_alt_kernel}-video-firegl
+%files -n kernel%{_alt_kernel}-video-firegl-legacy-12.x
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/*.ko*
 %endif
