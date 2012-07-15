@@ -28,13 +28,13 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		1
+%define		rel		0.BETA.1
 %define		pname		xorg-driver-video-fglrx-legacy-12.x
 Summary:	Linux Drivers for AMD graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD
 Name:		%{pname}%{_alt_kernel}
 Version:	12.6
-Release:	0.BETA.%{rel}
+Release:	%{rel}
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # Download http://support.amd.com/us/gpudownload/linux/Pages/radeon_linux.aspx?type=2.4.1&product=2.4.1.3.42&lang=English
