@@ -28,7 +28,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		0.BETA.1
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx-legacy-12.x
 Summary:	Linux Drivers for AMD graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD
@@ -39,9 +39,8 @@ License:	AMD Binary (parts are GPL)
 Group:		X11
 # Download http://support.amd.com/us/gpudownload/linux/Pages/radeon_linux.aspx?type=2.4.1&product=2.4.1.3.42&lang=English
 # or go to http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 4xxx -> linux
-#Source0:	http://www2.ati.com/drivers/linux/amd-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-Source0:	http://www2.ati.com/drivers/legacy/amd-driver-installer-%{version}-legacy-x86.x86_64.zip
-# Source0-md5:	36d5a91d60673b26705e9ac2df952daf
+Source0:	http://www2.ati.com/drivers/legacy/%(echo %{version} | tr . -)/amd-driver-installer-%{version}-legacy-x86.x86_64.zip
+# Source0-md5:	eada88ea8ec12e09f516527b5a5d55d6
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
