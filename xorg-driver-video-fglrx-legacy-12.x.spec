@@ -59,7 +59,7 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	sed >= 4.0
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
-Requires:	xorg-xserver-server(videodrv-abi) <= 12.0
+Requires:	xorg-xserver-server(videodrv-abi) <= 12.1
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Suggests:	kernel-video-firegl
 Provides:	xorg-driver-video
