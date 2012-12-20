@@ -28,7 +28,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		19
+%define		rel		20
 %define		pname		xorg-driver-video-fglrx-legacy-12.x
 Summary:	Linux Drivers for AMD graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD
@@ -54,6 +54,7 @@ Patch4:		xorg-driver-video-fglrx-nofinger.patch
 Patch5:		xorg-driver-video-fglrx-GPL-only.patch
 Patch6:		xorg-driver-video-fglrx-kernel-fpu.patch
 Patch7:		linux-3.5.0-missing_do_mmap.patch
+Patch8:		linux-3.7.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
@@ -200,6 +201,7 @@ cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/bu
 %patch5 -p1
 %patch6 -p0
 %patch7 -p1
+%patch8 -p1
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
 cp -a %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
