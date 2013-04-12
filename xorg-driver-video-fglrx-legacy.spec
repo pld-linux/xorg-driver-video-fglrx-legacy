@@ -28,19 +28,19 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		34
-%define		pname		xorg-driver-video-fglrx-legacy-12.x
+%define		rel		0.1
+%define		pname		xorg-driver-video-fglrx-legacy
 Summary:	Linux Drivers for AMD graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD
 Name:		%{pname}%{_alt_kernel}
-Version:	12.6
+Version:	13.1
 Release:	%{rel}
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # Download http://support.amd.com/us/gpudownload/linux/Pages/radeon_linux.aspx?type=2.4.1&product=2.4.1.3.42&lang=English
 # or go to http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 4xxx -> linux
-Source0:	http://www2.ati.com/drivers/legacy/%(echo %{version} | tr . -)/amd-driver-installer-%{version}-legacy-x86.x86_64.zip
-# Source0-md5:	eada88ea8ec12e09f516527b5a5d55d6
+Source0:	http://www2.ati.com/drivers/legacy/amd-driver-installer-catalyst-%{version}-legacy-linux-x86.x86_64.zip
+# Source0-md5:	c07fd1332abe4c742a9a0d0e0d0a90de
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -69,6 +69,7 @@ Provides:	xorg-xserver-module(glx)
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
 Obsoletes:	xorg-driver-video-fglrx-config
+Obsoletes:	xorg-driver-video-fglrx-legace-12.x
 Obsoletes:	xorg-driver-video-fglrx-libdri
 Obsoletes:	xorg-driver-video-fglrx-libglx
 ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
@@ -103,6 +104,7 @@ Obsoletes:	X11-OpenGL-core < 1:7.0.0
 Obsoletes:	X11-OpenGL-libGL < 1:7.0.0
 Obsoletes:	XFree86-OpenGL-core < 1:7.0.0
 Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
+Obsoletes:	xorg-driver-video-fglrx-legacy-12.x-libs
 
 %description libs
 AMD OpenGL (GL and GLX only) implementation libraries.
@@ -122,6 +124,7 @@ Provides:	OpenGL-GLX-devel = 1.4
 Provides:	OpenGL-devel = 3.3
 Obsoletes:	X11-OpenGL-devel-base
 Obsoletes:	XFree86-OpenGL-devel-base
+Obsoletes:	xorg-driver-video-fglrx-legacy-12.x-devel
 
 %description devel
 Header files for development for the AMD proprietary driver for AMD
@@ -136,6 +139,7 @@ Summary:	Static libraries for development for the AMD Radeon cards proprietary d
 Summary(pl.UTF-8):	Biblioteki statyczne do programowania z użyciem własnościowego sterownika dla kart AMD Radeon
 Group:		X11/Development/Libraries
 Requires:	%{pname}-devel = %{epoch}:%{version}-%{rel}
+Obsoletes:	xorg-driver-video-fglrx-legacy-12.x-static
 
 %description static
 Static libraries for development for the AMD proprietary driver for
@@ -153,6 +157,7 @@ Requires:	%{pname} = %{epoch}:%{version}-%{rel}
 Requires:	acpid
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
+Obsoletes:	xorg-driver-video-fglrx-legacy-12.x-atieventsd
 
 %description atieventsd
 The AMD External Events Daemon is a user-level application that
@@ -165,7 +170,7 @@ zdarzenia systemowe, takie jak ACPI lub hotplug, a następnie
 informującą sterownik poprzez interfejs rozszerzeń X, że zaszło
 zdarzenie.
 
-%package -n kernel%{_alt_kernel}-video-firegl-legacy-12.x
+%package -n kernel%{_alt_kernel}-video-firegl-legacy
 Summary:	AMD kernel module for FireGL support
 Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla AMD FireGL
 Release:	%{rel}@%{_kernel_ver_str}
@@ -175,12 +180,13 @@ Group:		Base/Kernel
 %if "%{_alt_kernel}" != "%{nil}"
 Provides:	kernel-video-firegl = %{epoch}:%{version}-%{rel}@%{_kernel_ver_str}
 %endif
+Obsoletes:	kernel%{_alt_kernel}-video-firegl-legacy-12.x
 Requires(post,postun):	/sbin/depmod
 
-%description -n kernel%{_alt_kernel}-video-firegl-legacy-12.x
+%description -n kernel%{_alt_kernel}-video-firegl-legacy
 AMD kernel module for FireGL support.
 
-%description -n kernel%{_alt_kernel}-video-firegl-legacy-12.x -l pl.UTF-8
+%description -n kernel%{_alt_kernel}-video-firegl-legacy -l pl.UTF-8
 Moduł jądra oferujący wsparcie dla AMD FireGL.
 
 %prep
@@ -306,10 +312,10 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del atieventsd
 fi
 
-%post	-n kernel%{_alt_kernel}-video-firegl-legacy-12.x
+%post	-n kernel%{_alt_kernel}-video-firegl-legacy
 %depmod %{_kernel_ver}
 
-%postun -n kernel%{_alt_kernel}-video-firegl-legacy-12.x
+%postun -n kernel%{_alt_kernel}-video-firegl-legacy
 %depmod %{_kernel_ver}
 
 %if %{with userspace}
@@ -389,7 +395,7 @@ fi
 %endif
 
 %if %{with kernel}
-%files -n kernel%{_alt_kernel}-video-firegl-legacy-12.x
+%files -n kernel%{_alt_kernel}-video-firegl-legacy
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/*.ko*
 %endif
