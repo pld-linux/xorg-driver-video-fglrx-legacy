@@ -28,7 +28,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		0.1
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx-legacy
 Summary:	Linux Drivers for AMD graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD
@@ -193,7 +193,7 @@ Moduł jądra oferujący wsparcie dla AMD FireGL.
 #%setup -q -c -T
 %setup -q -c
 
-sh amd-driver-installer-%{version}-legacy-x86.x86_64.run --extract .
+sh amd-driver-installer-catalyst-%{version}-legacy-linux-x86.x86_64.run --extract .
 
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
 
