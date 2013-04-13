@@ -69,7 +69,7 @@ Provides:	xorg-xserver-module(glx)
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
 Obsoletes:	xorg-driver-video-fglrx-config
-Obsoletes:	xorg-driver-video-fglrx-legace-12.x
+Obsoletes:	xorg-driver-video-fglrx-legacy-12.x
 Obsoletes:	xorg-driver-video-fglrx-libdri
 Obsoletes:	xorg-driver-video-fglrx-libglx
 ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
