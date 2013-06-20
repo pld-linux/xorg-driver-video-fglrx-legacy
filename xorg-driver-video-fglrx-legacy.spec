@@ -28,7 +28,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		12
+%define		rel		13
 %define		pname		xorg-driver-video-fglrx-legacy
 Summary:	Linux Drivers for AMD graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD
