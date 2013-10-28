@@ -12,13 +12,35 @@
 %if %{without kernel}
 %undefine	with_dist_kernel
 %endif
-%if "%{_alt_kernel}" != "%{nil}"
-%undefine	with_userspace
+
+# The goal here is to have main, userspace, package built once with
+# simple release number, and only rebuild kernel packages with kernel
+# version as part of release number, without the need to bump release
+# with every kernel change.
+%if 0%{?_pld_builder:1} && %{with kernel} && %{with userspace}
+%{error:kernel and userspace cannot be built at the same time on PLD builders}
+exit 1
 %endif
+
+%if "%{_alt_kernel}" != "%{nil}"
+%if 0%{?build_kernels:1}
+%{error:alt_kernel and build_kernels are mutually exclusive}
+exit 1
+%endif
+%undefine	with_userspace
+%global		_build_kernels		%{alt_kernel}
+%else
+%global		_build_kernels		%{?build_kernels:,%{?build_kernels}}
+%endif
+
 %if %{without userspace}
 # nothing to be placed to debuginfo package
 %define		_enable_debug_packages	0
 %endif
+
+%define		kbrs	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo "BuildRequires:kernel%%{_alt_kernel}-module-build >= 3:2.6.20.2" ; done)
+%define		kpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%kernel_pkg ; done)
+%define		bkpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%build_kernel_pkg ; done)
 
 %ifarch %{ix86}
 %define		arch_sufix	%{nil}
@@ -28,13 +50,13 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		24
+%define		rel		25
 %define		pname		xorg-driver-video-fglrx-legacy
 Summary:	Linux Drivers for AMD graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD
-Name:		%{pname}%{_alt_kernel}
+Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
 Version:	13.1
-Release:	%{rel}
+Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # Download http://support.amd.com/us/gpudownload/linux/Pages/radeon_linux.aspx?type=2.4.1&product=2.4.1.3.42&lang=English
@@ -56,8 +78,8 @@ Patch6:		xorg-driver-video-fglrx-kernel-fpu.patch
 Patch7:		linux-3.5.0-missing_do_mmap.patch
 Patch8:		linux-3.7.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
-BuildRequires:	rpmbuild(macros) >= 1.659
+BuildRequires:	rpmbuild(macros) >= 1.678
+%{?with_dist_kernel:%{expand:%kbrs}}
 BuildRequires:	sed >= 4.0
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
@@ -170,24 +192,47 @@ zdarzenia systemowe, takie jak ACPI lub hotplug, a następnie
 informującą sterownik poprzez interfejs rozszerzeń X, że zaszło
 zdarzenie.
 
-%package -n kernel%{_alt_kernel}-video-firegl-legacy
-Summary:	AMD kernel module for FireGL support
-Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla AMD FireGL
-Release:	%{rel}@%{_kernel_ver_str}
-License:	AMD
-Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel}
-%if "%{_alt_kernel}" != "%{nil}"
-Provides:	kernel-video-firegl = %{epoch}:%{version}-%{rel}@%{_kernel_ver_str}
-%endif
-Obsoletes:	kernel%{_alt_kernel}-video-firegl-legacy-12.x
-Requires(post,postun):	/sbin/depmod
+%define	kernel_pkg()\
+%package -n kernel%{_alt_kernel}-video-firegl-legacy\
+Summary:	AMD kernel module for FireGL support\
+Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla AMD FireGL\
+Release:	%{rel}@%{_kernel_ver_str}\
+License:	AMD\
+Group:		Base/Kernel\
+Requires(post,postun):	/sbin/depmod\
+%if %{with dist_kernel}\
+%requires_releq_kernel\
+Requires(postun):	%releq_kernel\
+%endif\
+Provides:	kernel%{_alt_kernel}-video-firegl = %{epoch}:%{version}-%{rel}@%{_kernel_ver_str}\
+Obsoletes:	kernel%{_alt_kernel}-video-firegl-legacy-12.x\
+\
+%description -n kernel%{_alt_kernel}-video-firegl-legacy\
+AMD kernel module for FireGL support.\
+\
+%description -n kernel%{_alt_kernel}-video-firegl-legacy -l pl.UTF-8\
+Moduł jądra oferujący wsparcie dla AMD FireGL.\
+\
+%if %{with kernel}\
+%files -n kernel%{_alt_kernel}-video-firegl-legacy\
+%defattr(644,root,root,755)\
+/lib/modules/%{_kernel_ver}/misc/*.ko*\
+%endif\
+\
+%post	-n kernel%{_alt_kernel}-video-firegl-legacy\
+%depmod %{_kernel_ver}\
+\
+%postun -n kernel%{_alt_kernel}-video-firegl-legacy\
+%depmod %{_kernel_ver}\
+%{nil}
 
-%description -n kernel%{_alt_kernel}-video-firegl-legacy
-AMD kernel module for FireGL support.
+%define build_kernel_pkg()\
+cp -pf common/lib/modules/fglrx/build_mod/2.6.x/Makefile common/lib/modules/fglrx/build_mod/\
+%build_kernel_modules -C common/lib/modules/fglrx/build_mod -m fglrx GCC_VER_MAJ=%{_ccver}\
+%install_kernel_modules -D installed -m common/lib/modules/fglrx/build_mod/fglrx -d misc\
+%{nil}
 
-%description -n kernel%{_alt_kernel}-video-firegl-legacy -l pl.UTF-8
-Moduł jądra oferujący wsparcie dla AMD FireGL.
+%{?with_kernel:%{expand:%kpkg}}
 
 %prep
 #%setup -q -c -T
@@ -227,18 +272,14 @@ mv common%{_libdir}/{fglrx/fglrx-libGL.so.1.2,libGL.so.1.2}
 cp -a arch/%{arch_dir}/etc/* common/etc
 
 %build
-%if %{with kernel}
-cd common/lib/modules/fglrx/build_mod
-cp -pf 2.6.x/Makefile .
-%build_kernel_modules -c -m fglrx GCC_VER_MAJ=%{_ccver}
-cd -
-%endif
+%{?with_kernel:%{expand:%bkpkg}}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-%install_kernel_modules -m common/lib/modules/fglrx/build_mod/fglrx -d misc
+install -d $RPM_BUILD_ROOT
+cp -a installed/* $RPM_BUILD_ROOT
 %endif
 
 %if %{with userspace}
@@ -317,12 +358,6 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del atieventsd
 fi
 
-%post	-n kernel%{_alt_kernel}-video-firegl-legacy
-%depmod %{_kernel_ver}
-
-%postun -n kernel%{_alt_kernel}-video-firegl-legacy
-%depmod %{_kernel_ver}
-
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
@@ -397,10 +432,4 @@ fi
 %attr(755,root,root) %{_sysconfdir}/acpi/ati-powermode.sh
 %{_sysconfdir}/acpi/events/*
 %{_mandir}/man8/atieventsd.8*
-%endif
-
-%if %{with kernel}
-%files -n kernel%{_alt_kernel}-video-firegl-legacy
-%defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}/misc/*.ko*
 %endif
